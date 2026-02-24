@@ -1,0 +1,10 @@
+[
+  {
+    "modid": "oreesp",
+    "name": "Ore ESP GUI",
+    "description": "Client-side ore outline with GUI and mod compatibility",
+    "version": "3.0",
+    "mcversion": "1.7.10",
+    "authorList": ["Arkprimalcahos"]
+  }
+]
