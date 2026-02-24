@@ -1,39 +1,41 @@
 name: Build OreESP
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: self-hosted
+    name: Build on Mac self-hosted
 
     steps:
-      # 1. Checkout your repo
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      # 2. Set up Java 8
-      - name: Set up Java 8
+      - name: Set up JDK 8
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '8'
+          distribution: temurin
+          java-version: 8
 
-      # 3. Download and cache Gradle 4.10.3
-      - name: Set up Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: 4.10.3
+      - name: Use local Gradle 4.10.3
+        run: |
+          export PATH="$HOME/Downloads/gradle-4.10.3/bin:$PATH"
+          gradle -v
 
-      # 4. Run Gradle build
-      - name: Build mod
+      - name: Clean build
+        run: ./gradlew clean
+
+      - name: Setup workspace
+        run: ./gradlew setupDecompWorkspace
+
+      - name: Build OreESP.jar
         run: ./gradlew build
-        env:
-          JAVA_HOME: ${{ steps.setup-java.outputs.path }}
 
-      # 5. Upload the JAR
-      - name: Upload OreESP JAR
+      - name: Upload OreESP.jar
         uses: actions/upload-artifact@v4
         with:
-          name: OreESP-1.7.10
+          name: OreESP
           path: build/libs/*.jar
