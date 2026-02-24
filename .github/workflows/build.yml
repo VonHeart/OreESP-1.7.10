@@ -37,5 +37,3 @@ jobs:
         with:
           name: OreESP-1.7.10
           path: build/libs/*.jar
-          name: OreESP
-          path: OreESP_Template/build/libs/*.jar
