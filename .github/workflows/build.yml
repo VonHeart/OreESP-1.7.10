@@ -29,7 +29,7 @@ jobs:
       - name: Build mod
         run: ./gradlew build
         env:
-          JAVA_HOME: ${{ steps.setup-java.outputs.path }}
+          JAVA_HOME: $(steps.setup-java.outputs.path)
 
       # 5. Upload the JAR
       - name: Upload OreESP JAR
