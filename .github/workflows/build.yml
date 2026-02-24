@@ -1,42 +1,41 @@
+name: Build OreESP
+
+on:
+  workflow_dispatch:
+
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-20.04
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # 1. Checkout your repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Set working directory
-        run: cd OreESP_Template
-
-      - name: Set up JDK 8
+      # 2. Set up Java 8
+      - name: Set up Java 8
         uses: actions/setup-java@v3
         with:
-          distribution: temurin
-          java-version: 8
+          distribution: 'temurin'
+          java-version: '8'
 
-      - name: Use local Gradle 4.10.3
-        run: |
-          export PATH="$HOME/Downloads/gradle-4.10.3/bin:$PATH"
-          gradle -v
+      # 3. Download and cache Gradle 4.10.3
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 4.10.3
 
-      - name: Clean build
-        run: |
-          cd OreESP_Template
-          ./gradlew clean
+      # 4. Run Gradle build
+      - name: Build mod
+        run: ./gradlew build
+        env:
+          JAVA_HOME: ${{ steps.setup-java.outputs.path }}
 
-      - name: Setup workspace
-        run: |
-          cd OreESP_Template
-          ./gradlew setupDecompWorkspace
-
-      - name: Build OreESP.jar
-        run: |
-          cd OreESP_Template
-          ./gradlew build
-
-      - name: Upload OreESP.jar
+      # 5. Upload the JAR
+      - name: Upload OreESP JAR
         uses: actions/upload-artifact@v4
         with:
+          name: OreESP-1.7.10
+          path: build/libs/*.jar
           name: OreESP
           path: OreESP_Template/build/libs/*.jar
